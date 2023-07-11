@@ -53,28 +53,32 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
 
     private getHtmlForWebview(document: vscode.TextDocument, webview: vscode.Webview): string {
 
-        const addWaveScriptUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(
-                this.context.extensionUri, 'media', 'addWave.js'
-            )
-        );
+		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(
+			this.context.extensionUri, 'media', 'addWave.js'));
 
-        const nonce = getNonce();
+		const nonce = getNonce();
 
-        return `
-            <!DOCTYPE html>
-            <html lang="en">
-                <head>
-                    hello
-                </head>
-                <body>
-                    <div class="control-bar">
-                        <div class="add-wave-button">
-                            <button>Add Wave</button>
-                        </div>
-                    </div>
-                    <script nonce="${nonce}" src="${addWaveScriptUri}"></script>
-                </body>
-            </html>`;
+		return /* html */`
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource}; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+				<title>WaveViewer</title>
+			</head>
+			<body>
+				<div class="notes">
+					<div class="add-button">
+						<button>Add Signal</button>
+					</div>
+				</div>
+				
+				<script nonce="${nonce}" src="${scriptUri}"></script>
+			</body>
+			</html>`;
     }
 }
