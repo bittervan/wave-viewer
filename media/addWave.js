@@ -10,8 +10,23 @@
 	const addButtonContainer = document.querySelector('.add-button');
 	addButtonContainer?.querySelector('button')?.addEventListener('click', () => {
 		vscode.postMessage({
-			type: 'add'
+			type: 'add',
 		});
+	})
+
+	function updateContent(/** @type {string} */ text) {
+		notesContainer.innerHTML = 'hello';
+	}
+
+	window.addEventListener('message', event => {
+		const message = event.data;
+		switch (message.type) {
+			case 'update':
+				console.log("update");
+				console.log(message.text);
+				updateContent(message.text);
+				return;
+		}
 	})
 
 }());

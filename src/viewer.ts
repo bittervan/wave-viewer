@@ -40,10 +40,8 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
         webviewPanel.webview.onDidReceiveMessage(e => {
             switch (e.type) {
                 case 'add':
-                    vscode.window.showInformationMessage('Hello World from WaveViewer!');
-                    return;
-                case 'err':
-                    vscode.window.showInformationMessage('Error!');
+                    this.addWave();
+                    updateWebview();
                     return;
             }
         });
@@ -80,5 +78,9 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
+    }
+
+    private addWave() {
+        vscode.window.showInformationMessage('Adding wave.');
     }
 }
