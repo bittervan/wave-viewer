@@ -1,17 +1,17 @@
-(
-    function() {
-        // @ts-ignore
-        const vscode = acquireVsCodeApi();
+// @ts-check
 
-        const barContainer = /** @type {HTMLElement} */ (document.querySelector('.control-bar'));
+// Script run within the webview itself.
+(function () {
+	// @ts-ignore
+	const vscode = acquireVsCodeApi();
 
-        console.log("in");
-        const addWaveButtonContainer = document.querySelector('.add-wave-button');
-        addWaveButtonContainer.querySelector('button').addEventListener('click', () => {
-            vscode.postMessage({
-                type: 'add'
-            });
-            console.log('test')
-        });
-    }
-)
+	const notesContainer = /** @type {HTMLElement} */ (document.querySelector('.notes'));
+
+	const addButtonContainer = document.querySelector('.add-button');
+	addButtonContainer?.querySelector('button')?.addEventListener('click', () => {
+		vscode.postMessage({
+			type: 'add'
+		});
+	})
+
+}());
