@@ -1,4 +1,5 @@
 import * as vscode from "vscode"
+import { getNonce } from "./util";
 
 export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider {
 
@@ -15,9 +16,15 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
     ) { }
 
     public async resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, token: vscode.CancellationToken): Promise<void> {
-		webviewPanel.webview.html = this.getHtmlForWebview(document);
+
+		webviewPanel.webview.html = this.getHtmlForWebview(document, webviewPanel.webview);
+
+		webviewPanel.webview.options = {
+			enableScripts: true,
+		};
+
         function updateWebview() {
-                webviewPanel.webview.postMessage({
+            webviewPanel.webview.postMessage({
                 type: 'update',
                 text: document.getText(),
             });
@@ -30,30 +37,44 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
             }
         });
 
-        webviewPanel.onDidDispose(() => {
-            changeDocumentSubscription.dispose();
-            vscode.window.showInformationMessage('dispose!');
+        webviewPanel.webview.onDidReceiveMessage(e => {
+            switch (e.type) {
+                case 'add':
+                    vscode.window.showInformationMessage('Hello World from WaveViewer!');
+                    return;
+                case 'err':
+                    vscode.window.showInformationMessage('Error!');
+                    return;
+            }
         });
-
-        webviewPanel.onDidChangeViewState(() => {
-            vscode.window.showInformationMessage('change!');
-        });
-
-        webviewPanel.webview.onDidReceiveMessage(() => {
-            vscode.window.showInformationMessage('message!');
-        })
 
         updateWebview();
     }
 
-    private getHtmlForWebview(document: vscode.TextDocument): string {
-        // return `
-        //     <!DOCTYPE html>
-        //     <html lang="en">
-        //         <head>
-        //             hello
-        //         </head>
-        //     </html>`;
-        return document.getText(); 
+    private getHtmlForWebview(document: vscode.TextDocument, webview: vscode.Webview): string {
+
+        const addWaveScriptUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(
+                this.context.extensionUri, 'media', 'addWave.js'
+            )
+        );
+
+        const nonce = getNonce();
+
+        return `
+            <!DOCTYPE html>
+            <html lang="en">
+                <head>
+                    hello
+                </head>
+                <body>
+                    <div class="control-bar">
+                        <div class="add-wave-button">
+                            <button>Add Wave</button>
+                        </div>
+                    </div>
+                    <script nonce="${nonce}" src="${addWaveScriptUri}"></script>
+                </body>
+            </html>`;
     }
 }
