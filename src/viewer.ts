@@ -46,6 +46,10 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
             }
         });
 
+        webviewPanel.onDidDispose(() => {
+            changeDocumentSubscription.dispose();
+        });
+
         updateWebview();
     }
 
@@ -69,12 +73,11 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
 				<title>WaveViewer</title>
 			</head>
 			<body>
-				<div class="notes">
+                <div class="control-panel">
 					<div class="add-button">
 						<button>Add Signal</button>
 					</div>
-				</div>
-				
+                </div>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
@@ -84,3 +87,10 @@ export class WaveViewerEditorProvider implements vscode.CustomTextEditorProvider
         vscode.window.showInformationMessage('Adding wave.');
     }
 }
+
+				// <div class="notes">
+				// 	<div class="add-button">
+				// 		<button>Add Signal</button>
+				// 	</div>
+				// </div>
+				

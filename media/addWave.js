@@ -5,7 +5,7 @@
 	// @ts-ignore
 	const vscode = acquireVsCodeApi();
 
-	const notesContainer = /** @type {HTMLElement} */ (document.querySelector('.notes'));
+	const controlPanelContainer = /** @type {HTMLElement} */ (document.querySelector('.control-panel'));
 
 	const addButtonContainer = document.querySelector('.add-button');
 	addButtonContainer?.querySelector('button')?.addEventListener('click', () => {
@@ -15,7 +15,9 @@
 	})
 
 	function updateContent(/** @type {string} */ text) {
-		notesContainer.innerHTML = 'hello';
+		if (addButtonContainer !== null) {
+			controlPanelContainer.appendChild(addButtonContainer);
+		}
 	}
 
 	window.addEventListener('message', event => {
