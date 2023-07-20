@@ -23,7 +23,6 @@
 	}
 
 	function updateDisplay(payload) {
-		console.log("ininin")
 		displayPanelContainer.innerHTML = "";
 		for (const signal of payload) {
 			const element = document.createElement('div')
@@ -40,9 +39,6 @@
 				updateControl(message.text);
 				return;
 			case 'addSignal':
-				console.log("***********");
-				console.log(message.payload);
-				console.log("***********");
 				updateDisplay(message.payload);
 				return;
 		}
